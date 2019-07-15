@@ -1,0 +1,39 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <Import Project="..\..\common.props"></Import>
+ 
+  <PropertyGroup>
+    <TargetFrameworks>net461;netcoreapp2.2</TargetFrameworks>
+    <AssetTargetFallback>$(AssetTargetFallback);portable-net45+win8+wp8+wpa81;</AssetTargetFallback>
+    <AssemblyName>DHJ.FileManagement.Application</AssemblyName>
+    <PackageId>DHJ.FileManagement.Application</PackageId>
+    <GenerateAssemblyTitleAttribute>false</GenerateAssemblyTitleAttribute>
+    <GenerateAssemblyDescriptionAttribute>false</GenerateAssemblyDescriptionAttribute>
+    <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
+    <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
+    <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
+    <RootNamespace>DHJ.FileManagement</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="EPPlus.Core" Version="1.5.4" />
+  </ItemGroup>
+
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net461' ">
+    <Reference Include="System.Drawing" />
+    <Reference Include="System" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Transactions" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\DHJ.FileManagement.Application.Shared\DHJ.FileManagement.Application.Shared.csproj" />
+    <ProjectReference Include="..\DHJ.FileManagement.Core\DHJ.FileManagement.Core.csproj" />
+    <ProjectReference Include="..\DHJ.FileManagement.EntityFrameworkCore\DHJ.FileManagement.EntityFrameworkCore.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="System.Transactions" />
+  </ItemGroup>
+
+</Project>
