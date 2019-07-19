@@ -5,7 +5,7 @@ using DHJ.FileManagement.Files.FileEntities;
 
 namespace DHJ.FileManagement.Files.FileFeatures.Productions.Manager
 {
-    public class ProductionInfoManager<T> : FileFeatureManagerBase<T> where T : FileBase, IHasProductionInfo
+    public class ProductionInfoManager<T> : FileFeatureManagerBase<T>,IProductionInfoManager<T> where T : FileBase, IHasProductionInfo
     {
         public ProductionInfoManager(IRepository<T> tRepository) : base(tRepository)
         {

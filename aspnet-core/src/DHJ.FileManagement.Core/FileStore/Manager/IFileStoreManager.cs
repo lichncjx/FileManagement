@@ -10,9 +10,9 @@ namespace DHJ.FileManagement.FileStore.Manager
         /// 入库
         /// </summary>
         /// <param name="fileNumber">文件编码</param>
-        /// <param name="box">文件盒对象</param>
+        /// <param name="boxNumber">文件盒编号</param>
         /// <returns></returns>
-        Task<FileBase> StockIn(string fileNumber, int boxId);
+        Task<FileBase> StockIn(string fileNumber, string boxNumber);
 
         /// <summary>
         /// 出库
@@ -27,5 +27,7 @@ namespace DHJ.FileManagement.FileStore.Manager
         /// <param name="fileNumber">文件编码</param>
         /// <returns></returns>
         Task<FileBase> Scrap(string fileNumber);
+
+        Task<FileBox> FindFile(int fileId);
     }
 }

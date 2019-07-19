@@ -5,11 +5,12 @@ using System.Linq.Expressions;
 using System.Reflection;
 using System.Threading.Tasks;
 using Abp.Domain.Repositories;
+using Abp.Domain.Services;
 using DHJ.FileManagement.Files.FileFeatures;
 
 namespace DHJ.FileManagement.Files.FileEntities
 {
-    public class FileManagerBase<T> : IFileManagerBase<T> where T : FileBase
+    public class FileManagerBase<T> : DomainService,IFileManagerBase<T> where T : FileBase
     {
         private readonly IRepository<T> _tRepository;
         public FileManagerBase(IRepository<T> tRepository)

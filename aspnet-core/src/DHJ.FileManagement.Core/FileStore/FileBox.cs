@@ -7,6 +7,6 @@ namespace DHJ.FileManagement.FileStore
     {
         public FileCabinet Cabinet { get; set; }
 
-        public List<int> FileId { get; set; }
+        public List<FileStoreInfo> FileStoreInfos { get; set; }
     }
 }

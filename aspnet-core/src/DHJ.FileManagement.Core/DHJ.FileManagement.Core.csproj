@@ -55,7 +55,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Files\FileFeatures\Technologies\Manager\" />
     <Folder Include="Files\FileFeatures\Versions\Model\" />
   </ItemGroup>
 

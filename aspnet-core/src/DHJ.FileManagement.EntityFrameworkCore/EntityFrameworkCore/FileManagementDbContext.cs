@@ -1,5 +1,6 @@
 ﻿using Abp.IdentityServer4;
 using Abp.Zero.EntityFrameworkCore;
+using DHJ.FileManagement.Applications;
 using DHJ.FileManagement.Authorization.Roles;
 using DHJ.FileManagement.Authorization.Users;
 using DHJ.FileManagement.Chat;
@@ -40,17 +41,19 @@ namespace DHJ.FileManagement.EntityFrameworkCore
         //文件管理
 
         public virtual DbSet<FileBase> ArchiveBases { get; set; }
-        
         public virtual DbSet<Drawing> Drawings { get; set; }
-
         public virtual DbSet<Technology> Technologies { get; set; }
-
         public virtual DbSet<BillBase> BillBases { get; set; }
 
         //库房管理
         public virtual DbSet<StoreRoom> StoreRooms { get; set; }
         public virtual DbSet<FileCabinet> FileCabinets { get; set; }
         public virtual DbSet<FileBox> FileBoxs { get; set; }
+        public virtual DbSet<FileStoreInfo> FileStoreInfos { get; set; }
+
+        //申请单
+        public virtual DbSet<FileBorrowing> FileBorrowings { get; set; }
+        public virtual DbSet<ProcessHistory> ProcessHistories { get; set; }
 
         /*--------------自定义 结束---------------*/
 

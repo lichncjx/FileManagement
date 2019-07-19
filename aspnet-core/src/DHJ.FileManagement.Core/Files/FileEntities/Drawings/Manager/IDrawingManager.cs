@@ -1,6 +1,6 @@
 ﻿namespace DHJ.FileManagement.Files.FileEntities.Drawings.Manager
 {
-    public interface IDrawingManager
+    public interface IDrawingManager : IFileManagerBase<Drawing>
     {
         
     }

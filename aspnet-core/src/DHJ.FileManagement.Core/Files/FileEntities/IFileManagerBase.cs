@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+using Abp.Domain.Services;
 
 namespace DHJ.FileManagement.Files.FileEntities
 {
-    public interface IFileManagerBase<T> where T : FileBase
+    public interface IFileManagerBase<T> : IDomainService where T : FileBase
     {
         Task<int> CreateFile(T file);
         Task<T> UpdateFile(T file);
