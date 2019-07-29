@@ -54,8 +54,4 @@
     <ProjectReference Include="..\DHJ.FileManagement.Core.Shared\DHJ.FileManagement.Core.Shared.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Files\FileFeatures\Versions\Model\" />
-  </ItemGroup>
-
 </Project>

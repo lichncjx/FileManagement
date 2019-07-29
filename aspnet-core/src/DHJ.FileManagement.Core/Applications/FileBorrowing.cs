@@ -16,7 +16,8 @@ namespace DHJ.FileManagement.Applications
 
         public string FileType { get; set; }
 
-        public List<ProcessHistory> Histories { get; set; }
+        public string ProcessInstId { get; set; }
 
+        public string OpenPassword { get; set; }
     }
 }

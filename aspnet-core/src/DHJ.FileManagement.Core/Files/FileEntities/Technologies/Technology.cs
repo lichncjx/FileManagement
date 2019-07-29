@@ -1,12 +1,14 @@
-﻿using DHJ.FileManagement.Files.FileFeatures.Technologies;
-using DHJ.FileManagement.Files.FileFeatures.Technologies.Model;
-using DHJ.FileManagement.Files.FileFeatures.Versions;
+﻿
+using System.Linq;
+using DHJ.FileManagement.Files.FileFeatures.Changes;
+using DHJ.FileManagement.Files.FileFeatures.Technologies;
 
 namespace DHJ.FileManagement.Files.FileEntities.Technologies
 {
-    public class Technology : FileBase,IHasTechnologyInfo,IHasVersion
+    public class Technology : FileBase, IHasDrawingNumber, IHasStage, IHasChange
     {
-        public virtual int Version { get; set; }
-        public virtual TechnologyInfo TechnologyInfo { get; set; }
+        public string DrawingNumber { get; set; }
+        public ProductStage ProductStage { get; set; }
+        public IQueryable<ChangeRecord> ChangeRecords { get; set; }
     }
 }

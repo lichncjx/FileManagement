@@ -6,11 +6,12 @@ using DHJ.FileManagement.Authorization.Users;
 using DHJ.FileManagement.Chat;
 using DHJ.FileManagement.Editions;
 using DHJ.FileManagement.Files.FileEntities;
-using DHJ.FileManagement.Files.FileEntities.Bills;
+using DHJ.FileManagement.Files.FileEntities.Bills.ChangeBills;
 using DHJ.FileManagement.Files.FileEntities.Drawings;
 using DHJ.FileManagement.Files.FileEntities.Technologies;
 using DHJ.FileManagement.FileStore;
 using DHJ.FileManagement.Friendships;
+using DHJ.FileManagement.Models;
 using DHJ.FileManagement.MultiTenancy;
 using DHJ.FileManagement.MultiTenancy.Accounting;
 using DHJ.FileManagement.MultiTenancy.Payments;
@@ -38,22 +39,23 @@ namespace DHJ.FileManagement.EntityFrameworkCore
         public virtual DbSet<PersistedGrantEntity> PersistedGrants { get; set; }
 
         /*--------------自定义 开始---------------*/
+
+        //型号基础信息管理
+        public virtual DbSet<ModelInfo> ModelInfos { get; set; }
+
         //文件管理
 
         public virtual DbSet<FileBase> ArchiveBases { get; set; }
         public virtual DbSet<Drawing> Drawings { get; set; }
         public virtual DbSet<Technology> Technologies { get; set; }
-        public virtual DbSet<BillBase> BillBases { get; set; }
+        public virtual DbSet<ChangeBill> ChangeBills { get; set; }
 
         //库房管理
-        public virtual DbSet<StoreRoom> StoreRooms { get; set; }
-        public virtual DbSet<FileCabinet> FileCabinets { get; set; }
-        public virtual DbSet<FileBox> FileBoxs { get; set; }
+        public virtual DbSet<StoreContainer> StoreContainers { get; set; }
         public virtual DbSet<FileStoreInfo> FileStoreInfos { get; set; }
 
         //申请单
         public virtual DbSet<FileBorrowing> FileBorrowings { get; set; }
-        public virtual DbSet<ProcessHistory> ProcessHistories { get; set; }
 
         /*--------------自定义 结束---------------*/
 

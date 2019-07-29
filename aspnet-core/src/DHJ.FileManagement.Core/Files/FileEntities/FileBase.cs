@@ -1,17 +1,18 @@
 ﻿using Abp.Domain.Entities.Auditing;
 using System.ComponentModel.DataAnnotations;
+using DHJ.FileManagement.SerialNumbers;
 
 namespace DHJ.FileManagement.Files.FileEntities
 {
-    public class FileBase : FullAuditedEntity
+    public abstract class FileBase : FullAuditedEntity
     {
-        public FileBase(string fileName)
+        protected FileBase(string fileName)
         {
             FileName = fileName;
-            FileNumber = FileNumberFactory.Create();
+            DocumentSerialNumber = SerialNumberFactory.Create();
         }
 
-        public FileBase()
+        protected FileBase()
         {
         }
 
@@ -22,19 +23,13 @@ namespace DHJ.FileManagement.Files.FileEntities
         public string FileName { get; set; }
 
         /// <summary>
-        /// 档案编号
+        /// 文件自身的编号
         /// </summary>
-        [Required]
-        public string FileNumber { get; private set; }
+        public string FileNumber { get; set; }
 
         /// <summary>
-        /// 页数
+        /// 统一档案编号
         /// </summary>
-        public virtual int Pages { get; set; }
-
-        /// <summary>
-        /// 存放位置
-        /// </summary>
-        public virtual int? LocationId { get; set; }
+        public string DocumentSerialNumber { get; private set; }
     }
 }

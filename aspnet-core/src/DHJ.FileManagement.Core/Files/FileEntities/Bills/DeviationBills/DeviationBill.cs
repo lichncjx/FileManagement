@@ -6,6 +6,9 @@ using DHJ.FileManagement.Files.FileFeatures.Versions;
 
 namespace DHJ.FileManagement.Files.FileEntities.Bills.DeviationBills
 {
+    /// <summary>
+    /// 偏离单
+    /// </summary>
     public class DeviationBill : BillBase, IHasTechnologyInfo, IHasProductionInfo, IHasVersion
     {
         public virtual int Version { get; set; }

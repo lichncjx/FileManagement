@@ -6,8 +6,8 @@ namespace DHJ.FileManagement.FileStore
     {
         public int FileId { get; set; }
 
-        public StoreState StoreState { get; set; }
+        public int FileContainerId { get; set; }
 
-        public FileBox FileBox { get; set; }
+        public StoreState StoreState { get; set; }
     }
 }
