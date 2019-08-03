@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Security.AccessControl;
 using Abp.Application.Services.Dto;
 using DHJ.FileManagement.Files;
@@ -12,8 +13,6 @@ namespace DHJ.FileManagement.ModelBaseInfos.Sections.Dto
         {
             Stages = GetStagesToComboBoxItemList();
         }
-
-        public int? ModelInfoId { get; set; }
 
         public List<ComboboxItemDto> Stages { get; private set; }
 

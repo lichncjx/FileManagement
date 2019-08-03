@@ -10,141 +10,141 @@ namespace DHJ.FileManagement.FileStore
 {
     public class FileStoreManager : DomainService
     {
-        private readonly IFileManagerBase<FileBase> _fileManager;
-        private readonly IRepository<StoreBase> _storeBaseRepository;
         private readonly IRepository<FileStoreInfo> _fileStoreInfoRepository;
 
-        public FileStoreManager(IFileManagerBase<FileBase> fileManager, IRepository<StoreBase> storeBaseRepository, IRepository<FileStoreInfo> fileStoreInfoRepository)
+        public FileStoreManager(IRepository<FileStoreInfo> fileStoreInfoRepository)
         {
-            _fileManager = fileManager;
-            _storeBaseRepository = storeBaseRepository;
             _fileStoreInfoRepository = fileStoreInfoRepository;
         }
 
-        public async Task<FileBase> StockIn(string documentSerialNumber, string storeSerialNumber)
+        /// <summary>
+        /// 入库
+        /// </summary>
+        /// <param name="file">文件对象</param>
+        /// <param name="storeContainer">存放容器对象</param>
+        /// <returns></returns>
+        public async Task StockIn(FileBase file, StoreContainer storeContainer)
         {
-            string errMessage = string.Empty; 
-            var file = await _fileManager.GetFile(documentSerialNumber);
+            string errMessage = string.Empty;
+            var fileStoreInfo = await _fileStoreInfoRepository.FirstOrDefaultAsync(p => p.FileId == file.Id);
 
-            if (file != null)
+            if (fileStoreInfo != null)
             {
-                var box = await _storeBaseRepository.GetAllIncluding(p=>p.FileStoreInfos).FirstOrDefaultAsync(p => p.SerialNumber == storeSerialNumber);
-                if (box != null)
+                switch (fileStoreInfo.StoreState)
                 {
-                    var fileStoreInfo = await _fileStoreInfoRepository.FirstOrDefaultAsync(p => p.FileId == file.Id);
-
-                    if (fileStoreInfo != null)
-                    {
+                    case StoreState.已出库:
                         fileStoreInfo.StoreState = StoreState.在库;
-                        fileStoreInfo.StoreId.Id = box.Id;
-                    }
-                    else
-                    {
-                        fileStoreInfo = new FileStoreInfo
-                        {
-                            FileId = file.Id,
-                            StoreState = StoreState.在库
-                        };
-                        box.FileStoreInfos.Add(fileStoreInfo);
-                    }
-                    
-                    return file;
-                }
-                else
-                {
-                    errMessage = $"未找到编号[{boxNumber}]的文件盒";
-                    throw new UserFriendlyException(errMessage);
+                        fileStoreInfo.FileContainerId = storeContainer.Id;
+                        break;
+                    case StoreState.在库:
+                        errMessage = $"档案编号[{file.DocumentSerialNumber}]状态为：[已入库]，请检查";
+                        break;
+                    case StoreState.已报废:
+                        errMessage = $"档案编号{file.DocumentSerialNumber}状态为：已报废，不可入库";
+                        break;
                 }
             }
             else
             {
-                errMessage = $"未找到编号[{fileNumber}]的文件记录";
+                fileStoreInfo = new FileStoreInfo
+                {
+                    FileId = file.Id,
+                    FileType = file.GetType().FullName,
+                    FileContainerId = storeContainer.Id,
+                    StoreState = StoreState.在库
+                };
+                await _fileStoreInfoRepository.InsertAsync(fileStoreInfo);
+            }
+
+            if (!string.IsNullOrEmpty(errMessage))
+            {
                 throw new UserFriendlyException(errMessage);
             }
         }
 
-        public async Task<FileBase> StockOut(string fileNumber)
+        /// <summary>
+        /// 出库
+        /// </summary>
+        /// <param name="file">文件对象</param>
+        /// <returns>存放容器Id</returns>
+        public async Task<int> StockOut(FileBase file)
+        {
+            string errMessage;
+            var fileStoreInfo = await _fileStoreInfoRepository.FirstOrDefaultAsync(p => p.FileId == file.Id);
+
+            if (fileStoreInfo != null)
+            {
+                switch (fileStoreInfo.StoreState)
+                {
+                    case StoreState.在库:
+                        fileStoreInfo.StoreState = StoreState.已出库;
+                        return fileStoreInfo.FileContainerId;
+                    case StoreState.已出库:
+                        errMessage = $"档案编号[{file.DocumentSerialNumber}]的文件不在库中";
+                        throw new UserFriendlyException(errMessage);
+                    case StoreState.已报废:
+                        errMessage = $"档案编号[{file.DocumentSerialNumber}]的文件已报废";
+                        throw new UserFriendlyException(errMessage);
+                    default:
+                        errMessage = $"档案编号[{file.DocumentSerialNumber}]的状态异常";
+                        throw new UserFriendlyException(errMessage);
+                }
+            }
+            else
+            {
+                errMessage = $"档案编号[{file.DocumentSerialNumber}]的文件还未入库";
+                throw new UserFriendlyException(errMessage);
+            }
+        }
+
+        /// <summary>
+        /// 报废
+        /// </summary>
+        /// <param name="file">文件对象</param>
+        /// <param name="storeContainer">存放容器对象（不换位置可不传参）</param>
+        /// <returns></returns>
+        public async Task Scrap(FileBase file, StoreContainer storeContainer = null)
         {
             string errMessage = string.Empty;
-            var file = await _fileManager.GetFile(fileNumber);
-            if (file != null)
-            {
-                var fileStoreInfo = await _fileStoreInfoRepository.FirstOrDefaultAsync(p => p.FileId == file.Id);
 
-                if (fileStoreInfo != null)
+            var fileStoreInfo = await _fileStoreInfoRepository.FirstOrDefaultAsync(p => p.FileId == file.Id);
+            if (fileStoreInfo != null)
+            {
+                switch (fileStoreInfo.StoreState)
                 {
-                    switch (fileStoreInfo.StoreState)
-                    {
-                        case StoreState.在库:
-                            fileStoreInfo.StoreState = StoreState.已出库;
-                            return file;
-                        case StoreState.已出库:
-                            errMessage = $"文件编号[{fileNumber}]的文件不在库中";
-                            throw new UserFriendlyException(errMessage);
-                        case StoreState.已报废:
-                            errMessage = $"文件编号[{fileNumber}]的文件已报废";
-                            throw new UserFriendlyException(errMessage);
-                        default:
-                            errMessage = $"文件编号[{fileNumber}]的文件库存状态异常";
-                            throw new UserFriendlyException(errMessage);
-                    }
-                }
-                else
-                {
-                    errMessage = $"文件编号[{fileNumber}]的文件还未入库";
-                    throw new UserFriendlyException(errMessage);
+                    case StoreState.在库:
+                        fileStoreInfo.StoreState = StoreState.已报废;
+                        if (storeContainer != null)
+                            fileStoreInfo.FileContainerId = storeContainer.Id;
+                        break;
+                    case StoreState.已出库:
+                        errMessage = $"档案编号[{file.DocumentSerialNumber}]的文件处于出库状态";
+                        break;
+                    case StoreState.已报废:
+                        errMessage = $"档案编号[{file.DocumentSerialNumber}]的文件已经报废了";
+                        break;
                 }
             }
             else
             {
-                errMessage = $"未找到文件编号[{fileNumber}]的文件记录";
+                errMessage = $"档案编号[{file.DocumentSerialNumber}]的文件还未入库";
+                throw new UserFriendlyException(errMessage);
+            }
+
+            if (string.IsNullOrEmpty(errMessage))
+            {
                 throw new UserFriendlyException(errMessage);
             }
         }
 
-        public async Task<FileBase> Scrap(string fileNumber)
+        /// <summary>
+        /// 获取文件存放信息
+        /// </summary>
+        /// <param name="file"></param>
+        /// <returns></returns>
+        public async Task<FileStoreInfo> GetFileStoreInfo(FileBase file)
         {
-            var file = await _fileManager.GetFile(fileNumber);
-            string errMessage = string.Empty;
-            if (file != null)
-            {
-                var fileStoreInfo = await _fileStoreInfoRepository.FirstOrDefaultAsync(p => p.FileId == file.Id);
-                if (fileStoreInfo != null)
-                {
-                    switch (fileStoreInfo.StoreState)
-                    {
-                        case StoreState.在库:
-                            fileStoreInfo.StoreState = StoreState.已报废;
-                            return file;
-                        case StoreState.已出库:
-                            errMessage = $"文件编号[{fileNumber}]的文件处于出库状态";
-                            throw new UserFriendlyException(errMessage);
-                        case StoreState.已报废:
-                            errMessage = $"文件编号[{fileNumber}]的文件已经报废了";
-                            throw new UserFriendlyException(errMessage);
-                        default:
-                            errMessage = $"文件编号[{fileNumber}]的文件库存状态异常";
-                            throw new UserFriendlyException(errMessage);
-                    }
-                }
-                else
-                {
-                    errMessage = $"文件编号[{fileNumber}]的文件还未入库";
-                    throw new UserFriendlyException(errMessage);
-                }
-            }
-            else
-            {
-                errMessage = $"未找到文件编号[{fileNumber}]的文件记录";
-                throw new UserFriendlyException(errMessage);
-            }
-        }
-
-        public async Task<FileBox> FindFile(int fileId)
-        {
-            var box = await _fileBoxRepository.GetAllIncluding(p=>p.FileStoreInfos).FirstOrDefaultAsync(p =>
-                p.FileStoreInfos.Find(f => f.FileId == fileId).FileId == fileId);
-            return box;
+            return await _fileStoreInfoRepository.FirstOrDefaultAsync(p => p.FileId == file.Id);
         }
     }
 }
