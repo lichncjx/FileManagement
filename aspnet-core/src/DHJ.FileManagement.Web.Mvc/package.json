@@ -91,7 +91,7 @@
     "toastr": "^2.1.4",
     "topojson": "^3.0.2",
     "typeahead.js": "^0.11.1",
-    "underscore": "^1.9.1",
+    "underscore": "^1.12.1",
     "urijs": "^1.19.1",
     "waypoints": "^4.0.1"
   },
